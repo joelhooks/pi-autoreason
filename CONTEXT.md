@@ -27,7 +27,9 @@ A set of fresh judges that rank randomized candidates. First place receives 3 po
 The loop stops when the incumbent wins `k=2` consecutive passes, matching the paper's practical default.
 
 ### Source-grounded mode
-A stricter profile for documents derived from PDFs/books/manuals/source material. It may reorganize, clarify, and repair extraction/layout issues, but must not add claims not supported by source context. Missing evidence becomes `needs_source`.
+A stricter profile for documents derived from provided source material. It may reorganize, clarify, and repair structure issues, but must not add claims not supported by source context. Missing evidence becomes `needs_source`.
+
+PDF handling is explicitly out of scope for this package; PDFs were only used to read the Autoreason paper during design.
 
 ## Paper-derived operating constraints
 

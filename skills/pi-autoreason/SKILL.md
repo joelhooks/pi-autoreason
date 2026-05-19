@@ -22,7 +22,7 @@ Fresh judges rank randomized versions. Borda count chooses the winner. Ties go t
 Good fits:
 
 - bounded plans, PRDs, specs, implementation prompts
-- extracted PDFs/books/manuals where source faithfulness matters
+- source-derived text where source faithfulness matters
 - docs with real tradeoffs and enough constraints
 - mid-tier model workflows where generation is decent but selection is weak
 
@@ -35,10 +35,10 @@ Bad fits:
 
 ## Source-grounded law
 
-For PDFs/books/manuals/source-derived content:
+For source-derived content:
 
 - Do not invent claims.
-- Preserve, reorganize, format, lightly clarify, and repair extraction/layout issues only.
+- Preserve, reorganize, format, lightly clarify, and repair structure issues only.
 - Mark missing/unsupported content as `needs_source`.
 - Rank source faithfulness above polish.
 

@@ -33,14 +33,20 @@ export default function (pi: ExtensionAPI) {
         ctx.ui.notify("Usage: /autoreason <path-or-task> [--mode artifact|source] [--source path] [--max-passes 5] [--judges 3]", "error");
         return;
       }
-      ctx.ui.notify("Autoreason run started. This can be expensive: ~6 model calls per pass.", "info");
-      try {
-        const summary = await runAutoreason({ ...parsed, outputBaseDir: path.join(process.cwd(), ".pi-runs", "autoreason") }, ctx);
-        ctx.ui.notify(`Autoreason ${summary.stopReason}: ${summary.finalPath}`, summary.stopReason === "failed" ? "error" : "info");
-        if (ctx.hasUI) ctx.ui.setEditorText(`Autoreason ${summary.stopReason}\n\nFinal: ${summary.finalPath}\nRun dir: ${summary.outputDir}\nPasses: ${summary.passes}`);
-      } catch (error) {
-        ctx.ui.notify(error instanceof Error ? error.message : String(error), "error");
-      }
+      const outputBaseDir = path.join(process.cwd(), ".pi-runs", "autoreason");
+      ctx.ui.notify("Autoreason run started in the background. Receipts will land in .pi-runs/autoreason.", "info");
+
+      // Do not await here. Awaiting a multi-pass model loop inside a slash-command
+      // handler makes Pi look frozen because the editor loop is occupied until all
+      // judge calls finish. Fire-and-report keeps the TUI responsive; agents should
+      // prefer the `autoreason_run` tool when they need a blocking result.
+      void runAutoreason({ ...parsed, outputBaseDir }, ctx)
+        .then((summary) => {
+          ctx.ui.notify(`Autoreason ${summary.stopReason}: ${summary.finalPath}`, summary.stopReason === "failed" ? "error" : "info");
+        })
+        .catch((error) => {
+          ctx.ui.notify(error instanceof Error ? error.message : String(error), "error");
+        });
     },
   });
 

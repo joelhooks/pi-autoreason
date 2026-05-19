@@ -42,7 +42,13 @@ Examples:
 ## Modes
 
 - `artifact`: refine bounded text artifacts such as plans, PRDs, prompts, and specs.
-- `source`: source-grounded reconstruction for extracted PDFs/books/manuals. No new claims. Unsupported content becomes `needs_source`.
+- `source`: source-grounded reconstruction from provided source context. No new claims. Unsupported content becomes `needs_source`.
+
+PDFs are not package scope. If a PDF was used during development, it was only to read the Autoreason paper.
+
+## Runtime note
+
+`/autoreason` starts a background run and returns immediately so Pi does not look frozen. Use the `autoreason_run` tool when an agent needs a blocking result.
 
 ## Status
 
