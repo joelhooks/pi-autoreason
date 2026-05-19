@@ -22,31 +22,33 @@ function parseCommandArgs(args: string): { input: string; mode?: AutoreasonMode;
 
 export default function (pi: ExtensionAPI) {
   pi.registerCommand("autoreason", {
-    description: "Run Autoreason refinement on a text artifact or inline task",
+    description: "Prepare an Autoreason tool request without blocking the Pi TUI",
     handler: async (args, ctx) => {
-      if (!ctx.model) {
-        ctx.ui.notify("No model selected", "error");
-        return;
-      }
       const parsed = parseCommandArgs(args ?? "");
       if (!parsed.input) {
         ctx.ui.notify("Usage: /autoreason <path-or-task> [--mode artifact|source] [--source path] [--max-passes 5] [--judges 3]", "error");
         return;
       }
-      const outputBaseDir = path.join(process.cwd(), ".pi-runs", "autoreason");
-      ctx.ui.notify("Autoreason run started in the background. Receipts will land in .pi-runs/autoreason.", "info");
 
-      // Do not await here. Awaiting a multi-pass model loop inside a slash-command
-      // handler makes Pi look frozen because the editor loop is occupied until all
-      // judge calls finish. Fire-and-report keeps the TUI responsive; agents should
-      // prefer the `autoreason_run` tool when they need a blocking result.
-      void runAutoreason({ ...parsed, outputBaseDir }, ctx)
-        .then((summary) => {
-          ctx.ui.notify(`Autoreason ${summary.stopReason}: ${summary.finalPath}`, summary.stopReason === "failed" ? "error" : "info");
-        })
-        .catch((error) => {
-          ctx.ui.notify(error instanceof Error ? error.message : String(error), "error");
-        });
+      const request = [
+        "Run pi-autoreason with the `autoreason_run` tool.",
+        "",
+        "Parameters:",
+        `- input: ${JSON.stringify(parsed.input)}`,
+        parsed.mode ? `- mode: ${parsed.mode}` : "- mode: artifact",
+        parsed.source ? `- source: ${JSON.stringify(parsed.source)}` : undefined,
+        `- maxPasses: ${parsed.maxPasses ?? 3}`,
+        `- judges: ${parsed.judges ?? 3}`,
+        "",
+        "Important: this is intentionally run as a normal agent tool call, not inside the slash-command handler, so the TUI does not lock up.",
+      ].filter(Boolean).join("\n");
+
+      if (ctx.hasUI) {
+        ctx.ui.setEditorText(request);
+        ctx.ui.notify("Autoreason request loaded into the editor. Submit it when ready.", "info");
+      } else {
+        ctx.ui.notify(request, "info");
+      }
     },
   });
 

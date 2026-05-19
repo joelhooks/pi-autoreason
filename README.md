@@ -48,7 +48,7 @@ PDFs are not package scope. If a PDF was used during development, it was only to
 
 ## Runtime note
 
-`/autoreason` starts a background run and returns immediately so Pi does not look frozen. Use the `autoreason_run` tool when an agent needs a blocking result.
+`/autoreason` does **not** run model calls inside the slash-command handler. It prepares an `autoreason_run` tool request in the editor. Submit that request when ready so the agent/tool lifecycle owns the long-running work instead of freezing the Pi TUI.
 
 ## Status
 
