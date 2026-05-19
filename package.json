@@ -1,0 +1,31 @@
+{
+  "name": "pi-autoreason",
+  "version": "0.1.0",
+  "description": "Pi package for Autoreason-style self-refinement with blind Borda judging and source-grounded modes.",
+  "type": "module",
+  "private": false,
+  "keywords": ["pi-package", "pi", "autoreason", "self-refinement", "llm-judge"],
+  "license": "MIT",
+  "repository": {"type": "git", "url": "git+https://github.com/joelhooks/pi-autoreason.git"},
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "xstate": "^5.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.0"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*",
+    "typebox": "*"
+  },
+  "pi": {
+    "extensions": ["./extensions"],
+    "skills": ["./skills"]
+  }
+}
